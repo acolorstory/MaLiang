@@ -32,8 +32,7 @@ public struct Pan {
         self.point = point
 
         let speed = pointsPerSecond.distance(to: .zero) / 1000
-        var pressure = sin(1 - min(4, speed) / 4)
-        pressure = 1 - pressure
+        let pressure = sin(1 - min(4, speed) / 4)
         self.force = pressure
     }
     
