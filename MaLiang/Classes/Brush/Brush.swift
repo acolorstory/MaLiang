@@ -32,7 +32,8 @@ public struct Pan {
         self.point = point
 
         let speed = pointsPerSecond.distance(to: .zero) / 1000
-        let pressure = sin(1 - min(4, speed) / 4)
+        var pressure = sin(1 - min(4, speed) / 4)
+        pressure =  1 - pressure
         self.force = pressure
     }
     
@@ -78,6 +79,10 @@ open class Brush {
     
     // force used when tap the canvas, defaults to 0.1
     open var forceOnTap: CGFloat = 1
+
+    open var weightDynamics: CGFloat = 0
+
+    open var opacityDynamics: CGFloat = 0
     
     /// color of stroke
     open var color: UIColor = .black {
@@ -141,12 +146,17 @@ open class Brush {
     /// - Returns: lines to render
     open func makeLine(from: CGPoint, to: CGPoint, force: CGFloat? = nil, uniqueColor: Bool = false) -> [MLLine] {
         let force = force ?? forceOnTap
+        let weightPressure = weightDynamics.sign == .plus ? force : 1 - force
+        let weight = max(1, pointSize - abs(weightDynamics) * weightPressure * pointSize)
+        let opacityPressure = opacityDynamics.sign == .plus ? force : 1 - force
+        let alpha = max(0.01, opacity - abs(opacityDynamics) * opacityPressure * opacity)
         let scale = scaleWithCanvas ? 1 : canvasScale
         let line = MLLine(begin: (from + canvasOffset) / canvasScale,
                           end: (to + canvasOffset) / canvasScale,
-                          pointSize: pointSize * force / scale,
+                          pointSize: weight / scale,
                           pointStep: pointStep / scale,
-                          color: uniqueColor ? renderingColor : nil)
+                          color: uniqueColor ? renderingColor : nil,
+                          alpha: alpha)
         return [line]
     }
     

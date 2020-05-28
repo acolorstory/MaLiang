@@ -77,6 +77,9 @@ class ViewController: UIViewController {
             brush.forceSensitive = 1
             brush.color = color
             brush.forceOnTap = 0.5
+            brush.opacity = 0.53
+            brush.opacityDynamics = -0.93
+            brush.weightDynamics = 0.71
             
             let texture = try canvas.makeTexture(with: UIImage(named: "glow")!.pngData()!)
             let glow: GlowingBrush = try canvas.registerBrush(name: "glow", textureID: texture.id)
@@ -91,8 +94,11 @@ class ViewController: UIViewController {
             texturedBrush.rotation = .ahead
             texturedBrush.pointSize = 15
             texturedBrush.pointStep = 2
-            texturedBrush.forceSensitive = 1
+            texturedBrush.forceSensitive = 0.71
             texturedBrush.forceOnTap = 0.5
+            texturedBrush.opacity = 0.53
+            texturedBrush.opacityDynamics = -0.93
+            texturedBrush.weightDynamics = 0.71
             
             let claw = try registerBrush(with: "claw")
             claw.rotation = .ahead
