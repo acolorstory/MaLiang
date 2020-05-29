@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		19A5AE05248064CE00207C22 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A5AE04248064CE00207C22 /* UIImage.swift */; };
 		19ED72552461C74300F0EC96 /* textureTest.png in Resources */ = {isa = PBXBuildFile; fileRef = 19ED72542461C74300F0EC96 /* textureTest.png */; };
 		3206061AEBC900E6419B1AC1 /* Pods_MaLiang_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17636DA7E81A7C670D9DA927 /* Pods_MaLiang_Example.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -33,6 +34,7 @@
 
 /* Begin PBXFileReference section */
 		17636DA7E81A7C670D9DA927 /* Pods_MaLiang_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MaLiang_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		19A5AE04248064CE00207C22 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		19ED72542461C74300F0EC96 /* textureTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = textureTest.png; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* MaLiang_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MaLiang_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -79,6 +81,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		19A5AE03248064BF00207C22 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				19A5AE04248064CE00207C22 /* UIImage.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		19BBFB79245F1DD5002849E2 /* Brushes */ = {
 			isa = PBXGroup;
 			children = (
@@ -197,6 +207,7 @@
 		C3617DAD2272EA8E00E5DC7C /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				19A5AE03248064BF00207C22 /* Utils */,
 				19ED72542461C74300F0EC96 /* textureTest.png */,
 				19BBFB79245F1DD5002849E2 /* Brushes */,
 			);
@@ -362,6 +373,7 @@
 				C3F3749722729A2E00F34376 /* TextureElementSamples.swift in Sources */,
 				C345EA5D22854A9E0041AA5D /* MathUtils.swift in Sources */,
 				C39C35A72259FBCB00DA0519 /* RootViewController.swift in Sources */,
+				19A5AE05248064CE00207C22 /* UIImage.swift in Sources */,
 				C3617DC022733FB300E5DC7C /* ChartletPicker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

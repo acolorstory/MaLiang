@@ -35,7 +35,7 @@ class ViewController: UIViewController {
     }
     
     private func registerBrush(with imageName: String) throws -> Brush {
-        let texture = try canvas.makeTexture(with: UIImage(named: imageName)!.pngData()!)
+        let texture = try canvas.makeTexture(with: UIImage(named: imageName)!.toSemiTransparentMask()!.pngData()!)
         return try canvas.registerBrush(name: imageName, textureID: texture.id)
     }
     
@@ -71,10 +71,10 @@ class ViewController: UIViewController {
             pencil.opacity = 1
             
             let brush = try registerBrush(with: "brush")
-            brush.rotation = .ahead
-            brush.pointSize = 15
+            brush.rotation = .fixed(180)
+            brush.pointSize = 150
             brush.pointStep = 2
-            brush.forceSensitive = 1
+            brush.forceSensitive = 0.71
             brush.color = color
             brush.forceOnTap = 0.5
             brush.opacity = 0.53
@@ -88,11 +88,12 @@ class ViewController: UIViewController {
             glow.pointSize = 20
             glow.rotation = .ahead
 
-            let brushTexture = try canvas.makeTexture(with: UIImage(named: "brush")!.pngData()!)
+            let paintBrush = UIImage(named: "brush")?.toSemiTransparentMask()
+            let brushTexture = try canvas.makeTexture(with: paintBrush!.pngData()!)
             let texturedBrush: TexturedBrush = try canvas.registerBrush(name: "textured", textureID: brushTexture.id)
             texturedBrush.foregroundImage = UIImage(named: "textureTest")
-            texturedBrush.rotation = .ahead
-            texturedBrush.pointSize = 15
+            texturedBrush.rotation = .fixed(180)
+            texturedBrush.pointSize = 150
             texturedBrush.pointStep = 2
             texturedBrush.forceSensitive = 0.71
             texturedBrush.forceOnTap = 0.5
