@@ -9,7 +9,7 @@ import Foundation
 import CoreGraphics
 
 /// a shot line with serveral points, base unit of line strip
-public struct MLLine: Codable {
+public struct MLLine: Codable, Equatable {
     public internal(set) var begin: CGPoint
     public internal(set) var end: CGPoint
     

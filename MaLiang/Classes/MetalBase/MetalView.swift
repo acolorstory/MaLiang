@@ -10,6 +10,10 @@ import UIKit
 import QuartzCore
 import MetalKit
 
+#if targetEnvironment(simulator) && !PREVIEWS
+//import MetalPerformanceShadersProxy
+#endif
+
 internal let sharedDevice = MTLCreateSystemDefaultDevice()
 
 open class MetalView: MTKView {
@@ -43,6 +47,7 @@ open class MetalView: MTKView {
     
     open override func layoutSubviews() {
         super.layoutSubviews()
+        setupTargetUniforms()
         screenTarget?.updateBuffer(with: drawableSize)
     }
 

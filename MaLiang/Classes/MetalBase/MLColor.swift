@@ -9,7 +9,7 @@ import Foundation
 import simd
 import UIKit
 
-public struct MLColor: Codable {
+public struct MLColor: Codable, Equatable {
     public internal(set) var red: Float
     public internal(set) var green: Float
     public internal(set) var blue: Float
@@ -21,7 +21,11 @@ public struct MLColor: Codable {
     public func toFloat4() -> vector_float4 {
         return vector_float4(red, green, blue, alpha)
     }
-    
+
+    public func toUIColor() -> UIColor {
+        return UIColor(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: CGFloat(alpha))
+    }
+
     public init(red: Float, green: Float, blue: Float, alpha: Float) {
         self.red = red
         self.green = green

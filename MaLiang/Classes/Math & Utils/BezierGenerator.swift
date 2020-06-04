@@ -68,7 +68,7 @@ class BezierGenerator {
         
         /// segements are based on distance about start and end point
         let dis = begin.distance(to: end)
-        let segements = max(Int(dis / 5), 2)
+        let segements = max(Int(dis / 4), 2)
 
         for i in 0 ..< segements {
             let t = CGFloat(i) / CGFloat(segements)

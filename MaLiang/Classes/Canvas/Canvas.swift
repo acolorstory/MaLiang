@@ -76,6 +76,11 @@ open class Canvas: MetalView {
         registeredBrushes.append(brush)
         return brush
     }
+
+    open func unregisterAllBrushes() {
+        registeredBrushes.removeAll()
+        textures.removeAll()
+    }
     
     /// current brush used to draw
     /// only registered brushed can be set to current
@@ -232,7 +237,7 @@ open class Canvas: MetalView {
         }
         
         data.finishCurrentElement()
-        
+
         target.updateBuffer(with: drawableSize)
         target.clear()
         
@@ -258,8 +263,15 @@ open class Canvas: MetalView {
         guard vertices.count >= 2 else {
             return
         }
-        var lastPan = lastRenderedPan ?? Pan(point: vertices[0], force: force)
+
+        let timestamp = Date().timeIntervalSince1970
+        if lastRenderedPan?.isInitialTouch == true {
+            lastRenderedPan?.force = force
+        }
+
+        var lastPan = lastRenderedPan ?? Pan(point: vertices[0], force: force, timestamp: timestamp)
         let deltaForce = (force - (lastRenderedPan?.force ?? force)) / CGFloat(vertices.count)
+        let deltaTimestamp = (timestamp - lastPan.timestamp) / Double(vertices.count)
         for i in 1 ..< vertices.count {
             let p = vertices[i]
             let pointStep = currentBrush.pointStep
@@ -271,7 +283,7 @@ open class Canvas: MetalView {
                     (pointStep > 1 && lastPan.point.distance(to: p) >= pointStep)
             {
                 let force = lastPan.force + deltaForce
-                let pan = Pan(point: p, force: force)
+                let pan = Pan(point: p, force: force, timestamp: lastPan.timestamp + deltaTimestamp)
                 let line = currentBrush.makeLine(from: lastPan, to: pan)
                 lines.append(contentsOf: line)
                 lastPan = pan
@@ -331,7 +343,7 @@ open class Canvas: MetalView {
             return
         }
         
-        let pan = Pan(touch: touch, on: self)
+        let pan = Pan(touch: touch, on: self, isInitialTouch: true)
         lastRenderedPan = pan
         
         guard renderingDelegate?.canvas(self, shouldBeginLineAt: pan.point, force: pan.force) ?? true else {
@@ -344,12 +356,12 @@ open class Canvas: MetalView {
     }
     
     override open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = firstAvaliableTouch(from: touches) else {
-            return
-        }
-        
-        guard bezierGenerator.points.count > 0 else { return }
-        let pan = Pan(touch: touch, on: self)
+        guard let touch = firstAvaliableTouch(from: touches),
+            bezierGenerator.points.count > 0 else { return }
+
+        var pan = Pan(touch: touch, on: self)
+        pan.force = 0.001 * pan.point.distance(to: lastRenderedPan?.point ?? .zero) /
+            CGFloat(pan.timestamp - (lastRenderedPan?.timestamp ?? 0.0))
         guard pan.point != lastRenderedPan?.point else {
             return
         }

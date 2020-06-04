@@ -13,24 +13,25 @@ public struct Pan {
     
     var point: CGPoint
     var force: CGFloat
+    var timestamp: TimeInterval
+    let isInitialTouch: Bool
 
-    init(touch: UITouch, on view: UIView) {
+    init(touch: UITouch, on view: UIView, isInitialTouch: Bool = false) {
+        self.isInitialTouch = isInitialTouch
         if #available(iOS 9.1, *) {
             point = touch.preciseLocation(in: view)
         } else {
             point = touch.location(in: view)
         }
         force = touch.force
-        
-        // force on devices not supporting from a finger is always 0, reset to 0.3
-        if touch.type == .direct, force == 0 {
-            force = 1
-        }
+        timestamp = Date().timeIntervalSince1970
     }
     
-    init(point: CGPoint, force: CGFloat) {
+    init(point: CGPoint, force: CGFloat, timestamp: TimeInterval = Date().timeIntervalSince1970) {
         self.point = point
         self.force = force
+        self.timestamp = timestamp
+        isInitialTouch = false
     }
 }
 
@@ -119,8 +120,11 @@ open class Brush {
     /// get a line with specified begin and end location with force info
     open func makeLine(from: Pan, to: Pan) -> [MLLine] {
         let endForce = from.force * 0.95 + to.force * 0.05
-        let forceRate = pow(endForce, forceSensitive)
-        return makeLine(from: from.point, to: to.point, force: forceRate)
+        renderingColor = color.toMLColor(opacity: (1.0 - 0.65 * opacityDynamics) * opacity +
+            min(0.0, max((1.0 - pow(endForce, 0.25)), -0.5 * opacityDynamics)))
+
+        let forceRate = max(0.25, pow(endForce, forceSensitive))
+        return makeLine(from: from.point, to: to.point, force: forceRate, uniqueColor: opacityDynamics > 0.0)
     }
     
     /// make lines to render with specified begin and end location
@@ -197,9 +201,9 @@ open class Brush {
     
     // MARK: - Render Actions
 
-    private func updatePointPipeline() {
+    private func updatePointPipeline(with target: Canvas) {
         
-        guard let target = target, let device = target.device, let library = makeShaderLibrary(from: device) else {
+        guard let device = target.device, let library = makeShaderLibrary(from: device) else {
             return
         }
         
