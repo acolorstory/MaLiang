@@ -64,6 +64,8 @@ open class Brush {
     // sensitive of pointsize changed from force, if sets to 0, stroke size will not be affected by force
     // sets to 1 to make an everage affect
     open var forceSensitive: CGFloat = 0
+
+    open var opacityDynamics: CGFloat = 0.0
     
     // indicate if the stroke size in visual will be scaled along with the Canvas
     // defaults to false, the stroke size in visual will stay with the original value
@@ -109,7 +111,7 @@ open class Brush {
         if let id = textureID {
             texture = target.findTexture(by: id)?.texture
         }
-        updatePointPipeline()
+        updatePointPipeline(with: target)
     }
     
     /// use this brush to draw
