@@ -77,9 +77,9 @@ open class LineStrip: CanvasElement, Equatable {
             let count = max(line.length / line.pointStep, 1)
             
             // fix opacity of line color
-            let overlapping = max(1, line.pointSize / line.pointStep)
-            var renderingColor = line.color ?? color
-            renderingColor.alpha = renderingColor.alpha / Float(overlapping) * 2.5
+//            let overlapping = max(1, line.pointSize / line.pointStep)
+//            var renderingColor = line.color ?? color
+//            renderingColor.alpha = renderingColor.alpha / Float(overlapping) * 2.5
 //            print("real color: \(renderingColor), overlapping: \(overlapping)")
             
             for i in 0 ..< Int(count) {
@@ -94,7 +94,7 @@ open class LineStrip: CanvasElement, Equatable {
                 case .ahead: angle = line.angle
                 }
                 
-                vertexes.append(Point(x: x, y: y, color: renderingColor, size: line.pointSize * scale, angle: angle))
+                vertexes.append(Point(x: x, y: y, color: line.color ?? color, size: line.pointSize * scale, angle: angle))
             }
         }
         
