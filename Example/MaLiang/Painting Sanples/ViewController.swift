@@ -11,6 +11,7 @@ import MaLiang
 import Comet
 import Chrysan
 import Zip
+import AVFoundation
 
 class ViewController: UIViewController {
     
@@ -34,7 +35,7 @@ class ViewController: UIViewController {
     }
     
     private func registerBrush(with imageName: String) throws -> Brush {
-        let texture = try canvas.makeTexture(with: UIImage(named: imageName)!.pngData()!)
+        let texture = try canvas.makeTexture(with: UIImage(named: imageName)!.toSemiTransparentMask()!.pngData()!)
         return try canvas.registerBrush(name: imageName, textureID: texture.id)
     }
     
@@ -70,12 +71,15 @@ class ViewController: UIViewController {
             pencil.opacity = 1
             
             let brush = try registerBrush(with: "brush")
-            brush.rotation = .ahead
-            brush.pointSize = 15
+            brush.rotation = .fixed(180)
+            brush.pointSize = 150
             brush.pointStep = 2
-            brush.forceSensitive = 1
+            brush.forceSensitive = 0.71
             brush.color = color
             brush.forceOnTap = 0.5
+            brush.opacity = 0.53
+            brush.opacityDynamics = -0.93
+            brush.weightDynamics = 0.71
             
             let texture = try canvas.makeTexture(with: UIImage(named: "glow")!.pngData()!)
             let glow: GlowingBrush = try canvas.registerBrush(name: "glow", textureID: texture.id)
@@ -83,6 +87,19 @@ class ViewController: UIViewController {
             glow.coreProportion = 0.2
             glow.pointSize = 20
             glow.rotation = .ahead
+
+            let paintBrush = UIImage(named: "brush")?.toSemiTransparentMask()
+            let brushTexture = try canvas.makeTexture(with: paintBrush!.pngData()!)
+            let texturedBrush: TexturedBrush = try canvas.registerBrush(name: "textured", textureID: brushTexture.id)
+            texturedBrush.foregroundImage = UIImage(named: "textureTest")
+            texturedBrush.rotation = .fixed(180)
+            texturedBrush.pointSize = 150
+            texturedBrush.pointStep = 2
+            texturedBrush.forceSensitive = 0.71
+            texturedBrush.forceOnTap = 0.5
+            texturedBrush.opacity = 0.53
+            texturedBrush.opacityDynamics = -0.93
+            texturedBrush.weightDynamics = 0.71
             
             let claw = try registerBrush(with: "claw")
             claw.rotation = .ahead
@@ -98,7 +115,7 @@ class ViewController: UIViewController {
             /// make eraser with default round point
             let eraser = try! canvas.registerBrush(name: "Eraser") as Eraser
             
-            brushes = [pen, pencil, brush, glow, claw, eraser]
+            brushes = [pen, pencil, brush, glow, texturedBrush, claw, eraser]
             
         } catch MLError.simulatorUnsupported {
             let alert = UIAlertController(title: "Attension", message: "You are running MaLiang on a Simulator, whitch is not supported by Metal. So painting is not alvaliable now. But you can go on testing your other businesses which are not relative with MaLiang. Or you can also runs MaLiang on your Mac with Catalyst enabled now.", preferredStyle: .alert)

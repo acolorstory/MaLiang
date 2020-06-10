@@ -25,12 +25,14 @@ struct Point {
     var color: vector_float4
     var angle: Float
     var size: Float
+    var alpha: Float
 
-    init(x: CGFloat, y: CGFloat, color: MLColor, size: CGFloat, angle: CGFloat = 0) {
+    init(x: CGFloat, y: CGFloat, color: MLColor, size: CGFloat, angle: CGFloat = 0, alpha: CGFloat = 1) {
         self.position = vector_float4(Float(x), Float(y), 0, 1)
         self.size = Float(size)
         self.color = color.toFloat4()
         self.angle = Float(angle)
+        self.alpha = Float(alpha)
     }
 }
 
@@ -59,10 +61,10 @@ struct Uniforms {
 }
 
 struct ColorBuffer {
-    var color: float4
+    var color: SIMD4<Float>
     
     init(r: Float, g: Float, b: Float, a: Float) {
-        color = float4(r,g,b,a)
+        color = .init(r,g,b,a)
     }
 }
 

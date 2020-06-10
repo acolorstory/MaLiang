@@ -27,6 +27,7 @@ struct Point {
     float4 color;
     float angle;
     float size [[point_size]];
+    float alpha;
 };
 
 struct Transform {
@@ -98,7 +99,7 @@ fragment float4 fragment_point_func(Point point_data [[ stage_in ]],
     constexpr sampler textureSampler(mag_filter::linear, min_filter::linear);
     float2 text_coord = transformPointCoord(pointCoord, point_data.angle, float2(0.5));
     float4 color = float4(tex2d.sample(textureSampler, text_coord));
-    return float4(point_data.color.rgb, color.a * point_data.color.a);
+    return float4(point_data.color.rgb, color.a * point_data.alpha);
 };
 
 // franment shader for glowing lines
@@ -113,7 +114,7 @@ fragment float4 fragment_point_func_glowing(Point point_data [[ stage_in ]],
     } else if (color.a <= 0) {
         return float4(0);
     }
-    return float4(point_data.color.rgb, color.a * point_data.color.a);
+    return float4(point_data.color.rgb, color.a * point_data.alpha);
 };
 
 // franment shader that applys original color of the texture
@@ -134,4 +135,20 @@ fragment float4 fragment_point_func_without_texture(Point point_data [[ stage_in
         return float4(0);
     }
     return point_data.color;
-}
+};
+
+fragment float4 fragment_point_func_textured(Point point_data [[ stage_in ]],
+                                             texture2d<float> tex2d [[ texture(0) ]],
+                                             texture2d<float> testTex2d [[ texture(1) ]],
+                                             float2 pointCoord  [[ point_coord ]])
+{
+    constexpr sampler textureSampler(mag_filter::linear, min_filter::linear);
+    float2 text_coord = transformPointCoord(pointCoord, point_data.angle, float2(0.5));
+    float4 maskColor = float4(tex2d.sample(textureSampler, text_coord));
+    uint height = testTex2d.get_height();
+    uint width = testTex2d.get_width();
+    float2 testTex2dPos = float2(point_data.position.x / width,
+                                 point_data.position.y / height);
+    float4 color = float4(testTex2d.sample(textureSampler, testTex2dPos));
+    return float4(color.rgb, maskColor.a * color.a * point_data.alpha);
+};

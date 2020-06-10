@@ -89,7 +89,7 @@ open class LineStrip: CanvasElement {
                 case .ahead: angle = line.angle
                 }
                 
-                vertexes.append(Point(x: x, y: y, color: line.color ?? color, size: line.pointSize * scale, angle: angle))
+                vertexes.append(Point(x: x, y: y, color: line.color ?? color, size: line.pointSize * scale, angle: angle, alpha: line.alpha))
             }
         }
         

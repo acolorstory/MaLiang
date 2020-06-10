@@ -15,16 +15,19 @@ public struct MLLine: Codable {
     
     public internal(set) var pointSize: CGFloat
     public internal(set) var pointStep: CGFloat
+
+    public internal(set) var alpha: CGFloat
     
     // optional color, color of line strip will be used if this sets to nil
     public internal(set) var color: MLColor?
     
-    public init(begin: CGPoint, end: CGPoint, pointSize: CGFloat, pointStep: CGFloat, color: MLColor?) {
+    public init(begin: CGPoint, end: CGPoint, pointSize: CGFloat, pointStep: CGFloat, color: MLColor?, alpha: CGFloat = 1) {
         self.begin = begin
         self.end = end
         self.pointSize = pointSize
         self.pointStep = pointStep
         self.color = color
+        self.alpha = alpha
     }
     
     public var length: CGFloat {
@@ -43,6 +46,7 @@ public struct MLLine: Codable {
         case size
         case step
         case color
+        case alpha
     }
     
     public init(from decoder: Decoder) throws {
@@ -56,6 +60,8 @@ public struct MLLine: Codable {
         let intStep = try container.decode(Int.self, forKey: .step)
         pointStep = CGFloat(intStep) / 10
         color = try? container.decode(MLColor.self, forKey: .color)
+        let intAlpha = try container.decode(Int.self, forKey: .alpha)
+        alpha = CGFloat(intAlpha) / 100
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -64,6 +70,7 @@ public struct MLLine: Codable {
         try container.encode(end.encodeToInts(), forKey: .end)
         try container.encode(Int(pointSize * 10), forKey: .size)
         try container.encode(Int(pointStep * 10), forKey: .step)
+        try container.encode(Int(alpha * 100), forKey: .alpha)
         if let color = self.color {
             try container.encode(color, forKey: .color)
         }
